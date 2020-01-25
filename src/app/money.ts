@@ -5,7 +5,7 @@ export class Money {
   }
 
   getAmount() {
-    return this.amount;
+    return this.amount / 100;
   }
 
   toString = (): string => {
