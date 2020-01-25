@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction } from '../transaction';
 import { Money } from '../money';
+import { TRANSACTIONS } from '../mock-transactions';
 
 @Component({
   selector: 'app-transactions',
@@ -9,11 +10,7 @@ import { Money } from '../money';
 })
 export class TransactionsComponent implements OnInit {
 
-  transaction: Transaction = {
-    date: new Date('12/31/2019'),
-    amount: new Money('-5.54'),
-    location: 'home',
-  }
+  transactions = TRANSACTIONS;
 
   constructor() { }
 
