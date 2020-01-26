@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { Transaction } from '../transaction';
-import { Money } from '../money';
-import { TRANSACTIONS } from '../mock-transactions';
+import { TransactionService } from '../transaction.service';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -17,13 +16,14 @@ export class TransactionsComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  transactions = new MatTableDataSource<Transaction>(TRANSACTIONS);
+  transactions: MatTableDataSource<Transaction>;
 
   tableColumns: string[] = ['date', 'amount', 'location'];
 
-  constructor() { }
+  constructor(private transactionService: TransactionService) { }
 
   ngOnInit() {
+    this.transactions = new MatTableDataSource<Transaction>(this.getTransactions());
     this.transactions.sort = this.sort;
     this.transactions.paginator = this.paginator;
   }
@@ -35,8 +35,12 @@ export class TransactionsComponent implements OnInit {
     }
   }
 
+  getTransactions(): Transaction[] {
+    return this.transactionService.getTransactions();
+  }
+
   getTotalCost() {
-    return TRANSACTIONS.map(t => t.amount).reduce((acc, value) => acc + value.getAmount(), 0);
+    return this.getTransactions().map(t => t.amount).reduce((acc, value) => acc + value.getAmount(), 0);
   }
 
 }

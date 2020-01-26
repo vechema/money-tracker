@@ -25,9 +25,9 @@
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 
-    <mat-header-row *matHeaderRowDef="tableColumns"></mat-header-row>
+    <mat-header-row *matHeaderRowDef="tableColumns; sticky: true"></mat-header-row>
     <mat-row *matRowDef="let row; columns: tableColumns"></mat-row>
-    <mat-footer-row *matFooterRowDef="tableColumns"></mat-footer-row>
+    <mat-footer-row *matFooterRowDef="tableColumns; sticky: true"></mat-footer-row>
 
   </mat-table>
 
