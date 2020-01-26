@@ -1,27 +1,23 @@
-# MoneyTracker
+# Money Tracker
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.22.
+A website used to keep track of my money. Node, Java, Maven, Angular, oh my!
 
-## Development server
+## Client
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Angular 8 to create frontend and beautiful user experience
 
-## Code scaffolding
+### Starting the client
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Go to client directory and run `ng serve`. View website at http://localhost:4200/
 
-## Build
+## Server
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Using Spring Boot 2 to create a backend
 
-## Running unit tests
+### Starting the server
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Go to server directory and run `mvn spring-boot:run`. View backend at http://localhost:8080/
 
-## Running end-to-end tests
+### Using an IDE
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+This project uses Lombok. You'll need to download the jar from https://projectlombok.org/download and follow the instructions from the install drop down to whatever IDE you're using
