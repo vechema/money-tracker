@@ -2,8 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {
   MatInputModule, MatPaginatorModule, MatProgressSpinnerModule,
-  MatSortModule, MatTableModule
-} from "@angular/material";
+  MatSortModule, MatTableModule, MatNativeDateModule,
+  MatFormFieldModule, MatDatepickerModule
+} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -25,6 +26,12 @@ import { TransactionsComponent } from './transactions/transactions.component';
     BrowserAnimationsModule,
     MatPaginatorModule,
     HttpClientModule,
+    MatDatepickerModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatInputModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
