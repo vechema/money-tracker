@@ -6,6 +6,8 @@ import { TransactionService } from '../transaction.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
@@ -41,6 +43,12 @@ export class TransactionsComponent implements OnInit {
 
   getTotalCost() {
     return this.getTransactions().map(t => t.amount).reduce((acc, value) => acc + value.getAmount(), 0);
+  }
+
+  events: string[] = [];
+
+  addEvent(type: string, event: MatDatepickerInputEvent) {
+    this.events.push(`${type}: ${event.value}`);
   }
 
 }
