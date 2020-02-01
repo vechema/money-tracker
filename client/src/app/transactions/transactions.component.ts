@@ -47,7 +47,7 @@ export class TransactionsComponent implements OnInit {
 
   events: string[] = [];
 
-  addEvent(type: string, event: MatDatepickerInputEvent) {
+  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
     this.events.push(`${type}: ${event.value}`);
   }
 
