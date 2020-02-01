@@ -22,6 +22,11 @@ export class TransactionsComponent implements OnInit {
 
   tableColumns: string[] = ['date', 'amount', 'location'];
 
+  // Filter variables
+  filterString: string;
+  startDate: Date;
+  endDate: Date;
+
   constructor(private transactionService: TransactionService) { }
 
   ngOnInit() {
@@ -30,25 +35,60 @@ export class TransactionsComponent implements OnInit {
     this.transactions.paginator = this.paginator;
   }
 
-  applyFilter(filterValue: string) {
-    this.transactions.filter = filterValue.trim().toLowerCase();
-    if (this.transactions.paginator) {
-      this.transactions.paginator.firstPage();
-    }
-  }
-
   getTransactions(): Transaction[] {
     return this.transactionService.getTransactions();
   }
 
+  // Need to just do what is being displayed...
   getTotalCost() {
     return this.getTransactions().map(t => t.amount).reduce((acc, value) => acc + value.getAmount(), 0);
   }
 
   events: string[] = [];
 
-  addEvent(type: string, event: MatDatepickerInputEvent<Date>) {
-    this.events.push(`${type}: ${event.value}`);
+  private applyAllFilters() {
+
+    this.transactions.filterPredicate = (transaction, filter) => {
+
+      let wordResult: boolean = true;
+      if (this.filterString && !transaction.location.toLowerCase().includes(this.filterString)) {
+        wordResult = false;
+      }
+
+      let afterStartDate: boolean = true;
+      if (this.startDate && !(this.startDate <= transaction.date)) {
+        afterStartDate = false;
+      }
+
+      let beforeEndDate: boolean = true;
+      if (this.endDate && !(this.endDate >= transaction.date)) {
+        beforeEndDate = false;
+      }
+
+      this.events.push(``)
+
+      return wordResult && afterStartDate && beforeEndDate;
+    }
+    //this.transactions.filter = this.filterString;
+    this.transactions.filter = '' + Math.random();
+    if (this.transactions.paginator) {
+      this.transactions.paginator.firstPage();
+    }
+  }
+
+  applyGeneralFilter(filterValue: string) {
+    this.filterString = filterValue.trim().toLowerCase();
+    this.applyAllFilters();
+  }
+
+  applyStartDateFilter(event: MatDatepickerInputEvent<Date>) {
+    this.startDate = event.value;
+    this.applyAllFilters();
+  }
+
+  applyEndDateFilter(event: MatDatepickerInputEvent<Date>) {
+    this.endDate = event.value;
+    this.applyAllFilters();
   }
 
 }

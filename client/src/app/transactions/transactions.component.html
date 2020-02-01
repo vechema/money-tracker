@@ -1,31 +1,25 @@
 <h2>My Transactions</h2>
 
 <mat-form-field>
-  <input matInput [matDatepicker]="fromDate"
-        placeholder="From Date"
-        (dateInput)="addEvent('inputFrom', $event)"
-        (dateChange)="addEvent('changeFrom', $event)">
-  <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
-  <mat-datepicker #fromDate></mat-datepicker>
+  <input matInput [matDatepicker]="startDate"
+        placeholder="Start Date"
+        (dateInput)="applyStartDateFilter($event)">
+  <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+  <mat-datepicker #startDate></mat-datepicker>
 </mat-form-field>
 
 <mat-form-field>
-  <input matInput [matDatepicker]="toDate"
-        placeholder="To Date"
-        (dateInput)="addEvent('inputTo', $event)"
-        (dateChange)="addEvent('changeTo', $event)">
-  <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
-  <mat-datepicker #toDate></mat-datepicker>
+  <input matInput [matDatepicker]="endDate"
+        placeholder="End Date"
+        (dateInput)="applyEndDateFilter($event)">
+  <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+  <mat-datepicker #endDate></mat-datepicker>
 </mat-form-field>
-
-<div class="example-events">
-  <div *ngFor="let e of events">{{e}}</div>
-</div>
 
 <br>
 
 <mat-form-field>
-  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  <input matInput (keyup)="applyGeneralFilter($event.target.value)" placeholder="Filter">
 </mat-form-field>
 
 <div class="mat-elevation-z8">
