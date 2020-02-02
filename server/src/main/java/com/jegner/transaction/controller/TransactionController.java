@@ -1,6 +1,7 @@
 package com.jegner.transaction.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,33 +33,30 @@ public class TransactionController {
 	private static Transaction makeRandomTransaction() {
 		String date = createRandomDate(2015, 2019);
 		String location = getRandomLocation();
-		String amount = String.format("%.2f", createRandomDoubleBetween(-10000, 10000) / 100);
+		int amount = createRandomIntBetween(-10000, 10000);
 
 		return Transaction.builder().setDate(date).setLocation(location).setAmount(amount).build();
 	}
 
-	private static double createRandomDoubleBetween(int start, int end) {
-		return start + Math.round(Math.random() * (end - start));
+	private static int createRandomIntBetween(int start, int end) {
+		return (int) (start + Math.round(Math.random() * (end - start)));
 	}
 
 	private static final String[] LOCATIONS = { "HEB", "Walmart", "Amazon", "Home Depot", "Shell", "Joann Fabric",
 			"PayPal" };
 
 	private static String getRandomLocation() {
-		int index = (int) createRandomDoubleBetween(0, LOCATIONS.length - 1);
+		int index = (int) createRandomIntBetween(0, LOCATIONS.length - 1);
 
 		return LOCATIONS[index];
 	}
 
 	private static String createRandomDate(int startYear, int endYear) {
-		int day = (int) createRandomDoubleBetween(1, 28);
-		int month = (int) createRandomDoubleBetween(1, 12);
-		int year = (int) createRandomDoubleBetween(startYear, endYear);
-		LocalDate date = LocalDate.of(year, month, day);
+		int day = createRandomIntBetween(1, 28);
+		int month = createRandomIntBetween(1, 12);
+		int year = createRandomIntBetween(startYear, endYear);
+		LocalDateTime dateTime = LocalDateTime.of(year, month, day, 0, 0);
 
-		String dateFormat = "MM/dd/yyyy";
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(dateFormat);
-
-		return dateFormatter.format(date);
+		return dateTime.toString() + ".000Z";
 	}
 }
