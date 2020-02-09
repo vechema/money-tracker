@@ -43,9 +43,10 @@ export class TransactionsComponent implements OnInit {
     });
   }
 
-  // Need to just do what is being displayed...
   getTotalCost() {
-    //return this.getTransactions().map(t => t.amount).reduce((acc, value) => acc + value.getAmount(), 0);
+    if (this.matTransactions) {
+      return this.matTransactions.filteredData.map(trans => trans.amount).reduce((acc, value) => acc + value.cents, 0) / 100;
+    }
     return 0;
   }
 
