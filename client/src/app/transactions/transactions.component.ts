@@ -18,7 +18,8 @@ export class TransactionsComponent implements OnInit {
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  transactions: MatTableDataSource<Transaction>;
+  matTransactions: MatTableDataSource<Transaction>;
+  transactions: Transaction[];
 
   tableColumns: string[] = ['date', 'amount', 'location'];
 
@@ -30,25 +31,27 @@ export class TransactionsComponent implements OnInit {
   constructor(private transactionService: TransactionService) { }
 
   ngOnInit() {
-    this.transactions = new MatTableDataSource<Transaction>(this.getTransactions());
-    this.transactions.sort = this.sort;
-    this.transactions.paginator = this.paginator;
+    this.getTransactions();
   }
 
-  getTransactions(): Transaction[] {
-    return this.transactionService.getTransactions();
+  getTransactions() {
+    this.transactionService.getTransactions().subscribe(trans => {
+      this.transactions = trans
+      this.matTransactions = new MatTableDataSource<Transaction>(this.transactions);
+      this.matTransactions.sort = this.sort;
+      this.matTransactions.paginator = this.paginator;
+    });
   }
 
   // Need to just do what is being displayed...
   getTotalCost() {
-    return this.getTransactions().map(t => t.amount).reduce((acc, value) => acc + value.getAmount(), 0);
+    //return this.getTransactions().map(t => t.amount).reduce((acc, value) => acc + value.getAmount(), 0);
+    return 0;
   }
-
-  events: string[] = [];
 
   private applyAllFilters() {
 
-    this.transactions.filterPredicate = (transaction, filter) => {
+    this.matTransactions.filterPredicate = (transaction, filter) => {
 
       let wordResult: boolean = true;
       if (this.filterString && !transaction.location.toLowerCase().includes(this.filterString)) {
@@ -65,14 +68,12 @@ export class TransactionsComponent implements OnInit {
         beforeEndDate = false;
       }
 
-      this.events.push(``)
-
       return wordResult && afterStartDate && beforeEndDate;
     }
-    //this.transactions.filter = this.filterString;
-    this.transactions.filter = '' + Math.random();
-    if (this.transactions.paginator) {
-      this.transactions.paginator.firstPage();
+    //this.matTransactions.filter = this.filterString;
+    this.matTransactions.filter = '' + Math.random();
+    if (this.matTransactions.paginator) {
+      this.matTransactions.paginator.firstPage();
     }
   }
 

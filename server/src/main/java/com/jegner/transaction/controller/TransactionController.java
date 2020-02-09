@@ -1,11 +1,8 @@
 package com.jegner.transaction.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +28,7 @@ public class TransactionController {
 	}
 
 	private static Transaction makeRandomTransaction() {
-		String date = createRandomDate(2015, 2019);
+		String date = createRandomDate(2015, 2021);
 		String location = getRandomLocation();
 		int amount = createRandomIntBetween(-10000, 10000);
 
@@ -55,8 +52,8 @@ public class TransactionController {
 		int day = createRandomIntBetween(1, 28);
 		int month = createRandomIntBetween(1, 12);
 		int year = createRandomIntBetween(startYear, endYear);
-		LocalDateTime dateTime = LocalDateTime.of(year, month, day, 0, 0);
+		LocalDate date = LocalDate.of(year, month, day);
 
-		return dateTime.toString() + ".000Z";
+		return date.toString();
 	}
 }
