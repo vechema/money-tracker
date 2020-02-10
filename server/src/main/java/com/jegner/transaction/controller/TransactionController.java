@@ -1,8 +1,12 @@
 package com.jegner.transaction.controller;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +23,64 @@ public class TransactionController {
 	@GetMapping("")
 	public List<Transaction> getAllTransactions() {
 
-		List<Transaction> result = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			result.add(makeRandomTransaction());
+		return extractCitiTransactions().stream().filter(trans -> !trans.getAmount().contains("-"))
+				.collect(Collectors.toList());
+	}
+
+	private List<Transaction> extractCitiTransactions() {
+		List<Transaction> transactions = new ArrayList<>();
+
+		String citiCsvPath = "C:\\Users\\Jo\\Life\\Finance\\citi_2back_2019.CSV";
+		String line = "";
+		String cvsSplitBy = ",";
+
+		try (BufferedReader br = new BufferedReader(new FileReader(citiCsvPath))) {
+
+			// Get rid of header line
+			line = br.readLine();
+
+			while ((line = br.readLine()) != null) {
+
+				// use comma as separator
+				String[] transactionRaw = line.split(cvsSplitBy);
+				String date = transactionRaw[1];
+				String location = transactionRaw[2];
+				if (location.startsWith("\"")) {
+					location = location.substring(1, location.length() - 1);
+				}
+				boolean isCredit = transactionRaw.length == 5;
+				String debit = transactionRaw[3];
+
+				if (isCredit) {
+					String credit = transactionRaw[4];
+					Transaction transaction = Transaction.builder().setDate(date).setAmount(credit)
+							.setLocation(location).build();
+					transactions.add(transaction);
+				} else if (!debit.isEmpty()) {
+					Transaction transaction = Transaction.builder().setDate(date).setAmount(debit).setLocation(location)
+							.build();
+					transactions.add(transaction);
+				} else {
+					System.out.println("Weirdness " + line);
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		return transactions;
+	}
+
+	private static List<Transaction> getTestTransactions() {
+		List<Transaction> result = new ArrayList<>();
+		int sum = 0;
+		for (int i = 0; i < 100; i++) {
+			Transaction transaction = makeRandomTransaction();
+			result.add(transaction);
+			sum += Double.parseDouble(transaction.getAmount()) * 100;
+		}
+		System.out.println(sum);
 
 		return result;
 	}
