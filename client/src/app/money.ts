@@ -1,8 +1,8 @@
 export class Money {
   cents: number;
 
-  constructor(cents: number) {
-    this.cents = cents;
+  constructor(dollar: string) {
+    this.cents = parseFloat(dollar) * 100;
   }
 
   getAmount() {

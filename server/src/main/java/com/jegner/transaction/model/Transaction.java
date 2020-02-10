@@ -6,12 +6,12 @@ import lombok.Data;
 public class Transaction {
 
 	private final String date;
-	private final Money amount;
+	private final String amount;
 	private final String location;
 
 	private Transaction(TransactionBuilder builder) {
 		this.date = builder.date;
-		this.amount = new Money(builder.amount);
+		this.amount = builder.amount;
 		this.location = builder.location;
 	}
 
@@ -21,7 +21,7 @@ public class Transaction {
 
 	public static class TransactionBuilder {
 		private String date;
-		private int amount;
+		private String amount;
 		private String location;
 
 		private TransactionBuilder() {
@@ -33,7 +33,7 @@ public class Transaction {
 			return this;
 		}
 
-		public TransactionBuilder setAmount(int amount) {
+		public TransactionBuilder setAmount(String amount) {
 			this.amount = amount;
 			return this;
 		}
@@ -46,6 +46,11 @@ public class Transaction {
 		public Transaction build() {
 			return new Transaction(this);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return date + " " + location + " " + amount;
 	}
 
 }

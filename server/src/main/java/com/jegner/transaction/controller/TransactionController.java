@@ -30,7 +30,7 @@ public class TransactionController {
 	private static Transaction makeRandomTransaction() {
 		String date = createRandomDate(2015, 2021);
 		String location = getRandomLocation();
-		int amount = createRandomIntBetween(-10000, 10000);
+		String amount = (((double) createRandomIntBetween(-10000, 10000)) / 100) + "";
 
 		return Transaction.builder().setDate(date).setLocation(location).setAmount(amount).build();
 	}
