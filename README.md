@@ -2,6 +2,15 @@
 
 A website used to keep track of my money. Node, Java, Maven, Angular, oh my!
 
+Hopeful use cases:
+* All transactions
+* Spending in X date range
+* Income in X date range
+* Spending by category
+* Spending by location
+* Payments of CC
+* Specials - cash back, interest
+
 ## Client
 
 Angular 8 to create frontend and beautiful user experience
