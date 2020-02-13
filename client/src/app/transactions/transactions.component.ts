@@ -21,7 +21,7 @@ export class TransactionsComponent implements OnInit {
   matTransactions: MatTableDataSource<Transaction>;
   transactions: Transaction[];
 
-  tableColumns: string[] = ['date', 'amount', 'location'];
+  tableColumns: string[] = ['date', 'amount', 'location', 'source'];
 
   // Filter variables
   filterString: string;

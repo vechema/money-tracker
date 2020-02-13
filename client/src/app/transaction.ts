@@ -4,4 +4,5 @@ export class Transaction {
   date: Date;
   amount: Money;
   location: string;
+  source: string;
 }

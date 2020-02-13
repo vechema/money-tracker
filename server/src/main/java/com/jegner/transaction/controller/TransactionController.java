@@ -51,14 +51,16 @@ public class TransactionController {
 				boolean isCredit = transactionRaw.length == 5;
 				String debit = transactionRaw[3];
 
+				final String source = "CITI";
+
 				if (isCredit) {
 					String credit = transactionRaw[4];
 					Transaction transaction = Transaction.builder().setDate(date).setAmount(credit)
-							.setLocation(location).build();
+							.setLocation(location).setSource(source).build();
 					transactions.add(transaction);
 				} else if (!debit.isEmpty()) {
 					Transaction transaction = Transaction.builder().setDate(date).setAmount(debit).setLocation(location)
-							.build();
+							.setSource(source).build();
 					transactions.add(transaction);
 				} else {
 					System.out.println("Weirdness " + line);

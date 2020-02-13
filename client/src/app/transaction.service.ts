@@ -22,7 +22,7 @@ export class TransactionService {
         .pipe(
           tap(transactions => transactions.forEach(trans => {
             trans.date = new Date(trans.date);
-            trans.amount = new Money(trans.amount);
+            trans.amount = new Money("" + trans.amount);
           })),
           catchError(this.handleError<Transaction[]>('getTransactions', []))
         );
