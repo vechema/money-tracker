@@ -1,6 +1,7 @@
 package com.jegner.transaction.controller;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,40 +32,55 @@ public class TransactionController {
 		List<Transaction> transactions = new ArrayList<>();
 
 		String citiCsvPath = "C:\\Users\\Jo\\Life\\Finance\\citi_2back_2019.CSV";
+		File citiFile = new File(citiCsvPath);
+		final String source = citiFile.getName().substring(0, citiFile.getName().indexOf('_'));
 		String line = "";
 		String cvsSplitBy = ",";
 
-		try (BufferedReader br = new BufferedReader(new FileReader(citiCsvPath))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(citiFile))) {
 
 			// Get rid of header line
-			line = br.readLine();
+			String[] headers = br.readLine().split(cvsSplitBy);
+			ArrayList<Integer> amountIndices = new ArrayList<>();
+			int locationIndex = -1, dateIndex = -1;
+			for (int i = 0; i < headers.length; i++) {
+				String header = headers[i];
+				// Date
+				if (isDate(header) && dateIndex == -1) {
+					dateIndex = i;
+				}
+				// Amount
+				if (isAmount(header)) {
+					amountIndices.add(i);
+				}
+				// Location
+				if (isLocation(header)) {
+					locationIndex = i;
+				}
+			}
 
 			while ((line = br.readLine()) != null) {
 
 				// use comma as separator
 				String[] transactionRaw = line.split(cvsSplitBy);
-				String date = transactionRaw[1];
-				String location = transactionRaw[2];
-				if (location.startsWith("\"")) {
-					location = location.substring(1, location.length() - 1);
-				}
-				boolean isCredit = transactionRaw.length == 5;
-				String debit = transactionRaw[3];
+				for (int i = 0; i < transactionRaw.length; i++) {
+					String transField = transactionRaw[i];
+					if (transField.startsWith("\"")) {
+						transactionRaw[i] = transField.substring(1, transField.length() - 1);
+					}
 
-				final String source = "CITI";
-
-				if (isCredit) {
-					String credit = transactionRaw[4];
-					Transaction transaction = Transaction.builder().setDate(date).setAmount(credit)
-							.setLocation(location).setSource(source).build();
-					transactions.add(transaction);
-				} else if (!debit.isEmpty()) {
-					Transaction transaction = Transaction.builder().setDate(date).setAmount(debit).setLocation(location)
-							.setSource(source).build();
-					transactions.add(transaction);
-				} else {
-					System.out.println("Weirdness " + line);
 				}
+				String date = transactionRaw[dateIndex];
+				String location = transactionRaw[locationIndex];
+				String amount = transactionRaw[amountIndices.get(0)];
+
+				if (amount.isEmpty()) {
+					amount = transactionRaw[amountIndices.get(1)];
+				}
+
+				Transaction transaction = Transaction.builder().setDate(date).setAmount(amount).setLocation(location)
+						.setSource(source).build();
+				transactions.add(transaction);
 			}
 
 		} catch (IOException e) {
@@ -72,6 +88,19 @@ public class TransactionController {
 		}
 
 		return transactions;
+	}
+
+	private boolean isDate(String header) {
+		return header.toLowerCase().contains("date");
+	}
+
+	private boolean isAmount(String amount) {
+		return amount.toLowerCase().contains("credit") || amount.toLowerCase().contains("debit")
+				|| amount.toLowerCase().contains("amount");
+	}
+
+	private boolean isLocation(String location) {
+		return location.toLowerCase().contains("description");
 	}
 
 	private static List<Transaction> getTestTransactions() {

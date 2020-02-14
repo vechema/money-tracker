@@ -58,7 +58,7 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return date + " " + location + " " + amount;
+		return date + " " + location + " " + amount + " " + source;
 	}
 
 }
