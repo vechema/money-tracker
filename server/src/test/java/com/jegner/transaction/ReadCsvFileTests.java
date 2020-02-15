@@ -14,13 +14,13 @@ import com.jegner.transaction.model.Transaction;
 public class ReadCsvFileTests {
 	
 	@Test
-	public void readCitiFile() {
+	public void readTransactionFiles() {
 		TransactionController controller = new TransactionController();
 		
 		List<Transaction> transactions = controller.getAllTransactions();
 		
 		for(Transaction trans : transactions) {
-			System.out.println(trans);
+		//	System.out.println(trans);
 		}
 		
 		assertThat(true, is(true));

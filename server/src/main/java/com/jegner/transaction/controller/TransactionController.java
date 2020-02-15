@@ -24,25 +24,43 @@ public class TransactionController {
 	@GetMapping("")
 	public List<Transaction> getAllTransactions() {
 
-		return extractCitiTransactions().stream().filter(trans -> !trans.getAmount().contains("-"))
-				.collect(Collectors.toList());
-	}
-
-	private List<Transaction> extractCitiTransactions() {
 		List<Transaction> transactions = new ArrayList<>();
 
-		String citiCsvPath = "C:\\Users\\Jo\\Life\\Finance\\citi_2back_2019.CSV";
-		File citiFile = new File(citiCsvPath);
-		final String source = citiFile.getName().substring(0, citiFile.getName().indexOf('_'));
+		File csvDirectory = new File("C:\\Users\\Jo\\Life\\Finance\\");
+		File[] csvDirListing = csvDirectory.listFiles((dir, file) -> file.toLowerCase().endsWith(".csv"));
+		for (File file : csvDirListing) {
+			System.out.println(file.getName());
+			transactions.addAll(getTransactions(file));
+		}
+
+		return transactions;
+		// return transactions.stream().filter(trans ->
+		// !trans.getAmount().contains("-")).collect(Collectors.toList());
+	}
+
+	private List<Transaction> getTransactions(File transactionFile) {
+
+		List<Transaction> transactions = new ArrayList<>();
+
+		final String source = transactionFile.getName().substring(0, transactionFile.getName().indexOf('_'));
 		String line = "";
 		String cvsSplitBy = ",";
 
-		try (BufferedReader br = new BufferedReader(new FileReader(citiFile))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(transactionFile))) {
 
 			// Get rid of header line
 			String[] headers = br.readLine().split(cvsSplitBy);
+			while (headers.length == 1) {
+				headers = br.readLine().split(cvsSplitBy);
+			}
+
+			if (headers[0].endsWith("\"")) {
+				cvsSplitBy = "\",\"";
+			}
+
 			ArrayList<Integer> amountIndices = new ArrayList<>();
-			int locationIndex = -1, dateIndex = -1;
+			ArrayList<Integer> locationIndices = new ArrayList<>();
+			int dateIndex = -1;
 			for (int i = 0; i < headers.length; i++) {
 				String header = headers[i];
 				// Date
@@ -55,14 +73,34 @@ public class TransactionController {
 				}
 				// Location
 				if (isLocation(header)) {
-					locationIndex = i;
+					locationIndices.add(i);
 				}
 			}
 
-			while ((line = br.readLine()) != null) {
+			if (locationIndices.size() == 0 || dateIndex == -1 || amountIndices.size() == 0) {
+				System.out.println("Didn't find needed index");
+			}
+
+			System.out.println("Date index: " + dateIndex);
+			System.out.println("Location index: " + locationIndices);
+			System.out.println("Amount indices: " + amountIndices);
+
+			while ((line = br.readLine()) != null && !line.isEmpty()) {
 
 				// use comma as separator
 				String[] transactionRaw = line.split(cvsSplitBy);
+				System.out.println(line + " " + transactionRaw.length);
+
+				// Check to make sure transaction has amount
+				if (transactionRaw.length < amountIndices.get(0)) {
+					System.out.println("There's possibly no amount in this transaction - weird");
+					System.out.println("\t" + line);
+					continue;
+				}
+
+				if (line.contains("Egner") && line.contains("2,265")) {
+					System.out.println();
+				}
 				for (int i = 0; i < transactionRaw.length; i++) {
 					String transField = transactionRaw[i];
 					if (transField.startsWith("\"")) {
@@ -70,16 +108,40 @@ public class TransactionController {
 					}
 
 				}
-				String date = transactionRaw[dateIndex];
-				String location = transactionRaw[locationIndex];
-				String amount = transactionRaw[amountIndices.get(0)];
+
+				String date = transactionRaw[dateIndex].trim();
+				String location = transactionRaw[locationIndices.get(0)].trim();
+				String amount = transactionRaw[amountIndices.get(0)].trim();
+
+				if (amount.isEmpty() && amountIndices.size() > 1) {
+					amount = transactionRaw[amountIndices.get(1)].trim();
+				}
+
+				if (location.isEmpty() && locationIndices.size() > 1) {
+					location = transactionRaw[locationIndices.get(1)].trim();
+				}
 
 				if (amount.isEmpty()) {
-					amount = transactionRaw[amountIndices.get(1)];
+					System.out.println("Transaction has no amount entry");
+					System.out.println("\t" + line);
+					continue;
+				}
+
+				if (date.isEmpty()) {
+					System.out.println("Transaction has no date entry");
+					System.out.println("\t" + line);
+					continue;
+				}
+
+				if (location.isEmpty()) {
+					System.out.println("Transaction has no location entry");
+					System.out.println("\t" + line);
+					continue;
 				}
 
 				Transaction transaction = Transaction.builder().setDate(date).setAmount(amount).setLocation(location)
 						.setSource(source).build();
+				System.out.println("\t" + transaction);
 				transactions.add(transaction);
 			}
 
@@ -100,7 +162,8 @@ public class TransactionController {
 	}
 
 	private boolean isLocation(String location) {
-		return location.toLowerCase().contains("description");
+		return location.toLowerCase().contains("description") || location.toLowerCase().contains("name")
+				|| location.toLowerCase().contains("type");
 	}
 
 	private static List<Transaction> getTestTransactions() {
