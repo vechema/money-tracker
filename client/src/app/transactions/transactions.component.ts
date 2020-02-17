@@ -55,7 +55,8 @@ export class TransactionsComponent implements OnInit {
     this.matTransactions.filterPredicate = (transaction, filter) => {
 
       let wordResult: boolean = true;
-      if (this.filterString && !transaction.location.toLowerCase().includes(this.filterString)) {
+      if (this.filterString && !transaction.location.toLowerCase().includes(this.filterString) ||
+        !transaction.source.toLowerCase().includes(this.filterString)) {
         wordResult = false;
       }
 
