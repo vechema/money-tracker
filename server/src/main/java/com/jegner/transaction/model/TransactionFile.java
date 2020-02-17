@@ -5,13 +5,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
 
 /**
- * Debit will be negative (money spent - HEB, paying a bill)
- * Credit will be positive (money received - salary, payment of credit card on credit card statement)
+ * Debit will be negative (money spent - HEB, paying a bill) Credit will be
+ * positive (money received - salary, payment of credit card on credit card
+ * statement)
+ * 
  * @author Jo
  *
  */
@@ -19,12 +22,12 @@ import lombok.Data;
 public class TransactionFile {
 	private final File file;
 	private List<Transaction> transactions;
-	
+
 	public TransactionFile(File file) {
 		this.file = file;
 		this.transactions = extractTransactions(this.file);
 	}
-	
+
 	private static List<Transaction> extractTransactions(File transactionFile) {
 
 		List<Transaction> transactions = new ArrayList<>();
@@ -72,11 +75,15 @@ public class TransactionFile {
 			System.out.println("Location index: " + locationIndices);
 			System.out.println("Amount indices: " + amountIndices);
 
+			String[] creditDescriptions = { "direct dep", "credit card deposit", "directpay", "automatic payment",
+					"auto-pmt" };
+			boolean creditIsPos = true;
+
 			while ((line = br.readLine()) != null && !line.isEmpty()) {
 
 				// use comma as separator
 				String[] transactionRaw = line.split(cvsSplitBy);
-				System.out.println(line + " " + transactionRaw.length);
+				// System.out.println(line + " " + transactionRaw.length);
 
 				// Check to make sure transaction has amount
 				if (transactionRaw.length < amountIndices.get(0)) {
@@ -85,9 +92,6 @@ public class TransactionFile {
 					continue;
 				}
 
-				if (line.contains("Egner") && line.contains("2,265")) {
-					System.out.println();
-				}
 				for (int i = 0; i < transactionRaw.length; i++) {
 					String transField = transactionRaw[i];
 					if (transField.startsWith("\"")) {
@@ -128,14 +132,34 @@ public class TransactionFile {
 
 				Transaction transaction = Transaction.builder().setDate(date).setAmount(amount).setLocation(location)
 						.setSource(source).build();
-				System.out.println("\t" + transaction);
+
+				if (Arrays.stream(creditDescriptions).parallel().anyMatch(location.toLowerCase()::contains)) {
+					System.out.println(transaction);
+					if (amount.startsWith("-")) {
+						creditIsPos = false;
+					}
+				}
+				// System.out.println("\t" + transaction);
 				transactions.add(transaction);
+			}
+
+			if (!creditIsPos) {
+				List<Transaction> tempTransactions = new ArrayList<>(transactions);
+				transactions.clear();
+				for (Transaction trans : tempTransactions) {
+					String newAmount = trans.getAmount().startsWith("-") ? trans.getAmount().substring(1)
+							: "-" + trans.getAmount();
+					Transaction flippedTrans = Transaction.builder().setDate(trans.getDate()).setAmount(newAmount)
+							.setLocation(trans.getLocation()).setSource(trans.getSource()).build();
+					transactions.add(flippedTrans);
+				}
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
+		System.out.println("\n\n");
 		return transactions;
 	}
 
@@ -150,6 +174,6 @@ public class TransactionFile {
 
 	private static boolean isLocation(String location) {
 		return location.toLowerCase().contains("description") || location.toLowerCase().contains("name")
-				|| location.toLowerCase().contains("type");
+				|| location.toLowerCase().contains("type") || location.toLowerCase().startsWith("action");
 	}
 }
