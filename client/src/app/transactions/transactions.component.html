@@ -37,9 +37,9 @@
       <mat-footer-cell *matFooterCellDef> {{getTotalCost()}} </mat-footer-cell>
     </ng-container>
 
-    <ng-container  matColumnDef="location">
-      <mat-header-cell *matHeaderCellDef mat-sort-header>Location</mat-header-cell>
-      <mat-cell *matCellDef="let transaction">{{transaction.location}}</mat-cell>
+    <ng-container  matColumnDef="description">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Description</mat-header-cell>
+      <mat-cell *matCellDef="let transaction">{{transaction.description}}</mat-cell>
       <mat-footer-cell *matFooterCellDef></mat-footer-cell>
     </ng-container>
 

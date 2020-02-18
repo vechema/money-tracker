@@ -7,7 +7,7 @@ Hopeful use cases:
 * Spending in X date range
 * Income in X date range
 * Spending by category
-* Spending by location
+* Spending by description/location
 * Payments of CC
 * Specials - cash back, interest
 

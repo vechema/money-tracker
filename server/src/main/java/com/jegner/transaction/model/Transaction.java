@@ -7,13 +7,13 @@ public class Transaction {
 
 	private final String date;
 	private final String amount;
-	private final String location;
+	private final String description;
 	private final String source;
 
 	private Transaction(TransactionBuilder builder) {
 		this.date = builder.date;
 		this.amount = builder.amount;
-		this.location = builder.location;
+		this.description = builder.description;
 		this.source = builder.source;
 	}
 
@@ -24,7 +24,7 @@ public class Transaction {
 	public static class TransactionBuilder {
 		private String date;
 		private String amount;
-		private String location;
+		private String description;
 		private String source;
 
 		private TransactionBuilder() {
@@ -41,8 +41,8 @@ public class Transaction {
 			return this;
 		}
 
-		public TransactionBuilder setLocation(String location) {
-			this.location = location;
+		public TransactionBuilder setDescription(String description) {
+			this.description = description;
 			return this;
 		}
 
@@ -58,7 +58,7 @@ public class Transaction {
 
 	@Override
 	public String toString() {
-		return date + " " + location + " " + amount + " " + source;
+		return date + " " + description + " " + amount + " " + source;
 	}
 
 }

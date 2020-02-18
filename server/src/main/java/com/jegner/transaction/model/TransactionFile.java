@@ -49,7 +49,7 @@ public class TransactionFile {
 			}
 
 			ArrayList<Integer> amountIndices = new ArrayList<>();
-			ArrayList<Integer> locationIndices = new ArrayList<>();
+			ArrayList<Integer> descriptionIndices = new ArrayList<>();
 			int dateIndex = -1;
 			for (int i = 0; i < headers.length; i++) {
 				String header = headers[i];
@@ -61,18 +61,18 @@ public class TransactionFile {
 				if (isAmount(header)) {
 					amountIndices.add(i);
 				}
-				// Location
-				if (isLocation(header)) {
-					locationIndices.add(i);
+				// Description
+				if (isDescription(header)) {
+					descriptionIndices.add(i);
 				}
 			}
 
-			if (locationIndices.size() == 0 || dateIndex == -1 || amountIndices.size() == 0) {
+			if (descriptionIndices.size() == 0 || dateIndex == -1 || amountIndices.size() == 0) {
 				System.out.println("Didn't find needed index");
 			}
 
 			System.out.println("Date index: " + dateIndex);
-			System.out.println("Location index: " + locationIndices);
+			System.out.println("Description index: " + descriptionIndices);
 			System.out.println("Amount indices: " + amountIndices);
 
 			String[] creditDescriptions = { "direct dep", "credit card deposit", "directpay", "automatic payment",
@@ -101,15 +101,15 @@ public class TransactionFile {
 				}
 
 				String date = transactionRaw[dateIndex].trim();
-				String location = transactionRaw[locationIndices.get(0)].trim();
+				String description = transactionRaw[descriptionIndices.get(0)].trim();
 				String amount = transactionRaw[amountIndices.get(0)].trim();
 
 				if (amount.isEmpty() && amountIndices.size() > 1) {
 					amount = transactionRaw[amountIndices.get(1)].trim();
 				}
 
-				if (location.isEmpty() && locationIndices.size() > 1) {
-					location = transactionRaw[locationIndices.get(1)].trim();
+				if (description.isEmpty() && descriptionIndices.size() > 1) {
+					description = transactionRaw[descriptionIndices.get(1)].trim();
 				}
 
 				if (amount.isEmpty()) {
@@ -124,16 +124,16 @@ public class TransactionFile {
 					continue;
 				}
 
-				if (location.isEmpty()) {
-					System.out.println("Transaction has no location entry");
+				if (description.isEmpty()) {
+					System.out.println("Transaction has no description entry");
 					System.out.println("\t" + line);
 					continue;
 				}
 
-				Transaction transaction = Transaction.builder().setDate(date).setAmount(amount).setLocation(location)
+				Transaction transaction = Transaction.builder().setDate(date).setAmount(amount).setDescription(description)
 						.setSource(source).build();
 
-				if (Arrays.stream(creditDescriptions).parallel().anyMatch(location.toLowerCase()::contains)) {
+				if (Arrays.stream(creditDescriptions).parallel().anyMatch(description.toLowerCase()::contains)) {
 					System.out.println(transaction);
 					if (amount.startsWith("-")) {
 						creditIsPos = false;
@@ -150,7 +150,7 @@ public class TransactionFile {
 					String newAmount = trans.getAmount().startsWith("-") ? trans.getAmount().substring(1)
 							: "-" + trans.getAmount();
 					Transaction flippedTrans = Transaction.builder().setDate(trans.getDate()).setAmount(newAmount)
-							.setLocation(trans.getLocation()).setSource(trans.getSource()).build();
+							.setDescription(trans.getDescription()).setSource(trans.getSource()).build();
 					transactions.add(flippedTrans);
 				}
 			}
@@ -172,8 +172,8 @@ public class TransactionFile {
 				|| amount.toLowerCase().contains("amount");
 	}
 
-	private static boolean isLocation(String location) {
-		return location.toLowerCase().contains("description") || location.toLowerCase().contains("name")
-				|| location.toLowerCase().contains("type") || location.toLowerCase().startsWith("action");
+	private static boolean isDescription(String description) {
+		return description.toLowerCase().contains("description") || description.toLowerCase().contains("name")
+				|| description.toLowerCase().contains("type") || description.toLowerCase().startsWith("action");
 	}
 }

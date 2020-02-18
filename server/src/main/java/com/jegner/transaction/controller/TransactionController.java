@@ -51,23 +51,23 @@ public class TransactionController {
 
 	private static Transaction makeRandomTransaction() {
 		String date = createRandomDate(2015, 2021);
-		String location = getRandomLocation();
+		String description = getRandomDescription();
 		String amount = (((double) createRandomIntBetween(-10000, 10000)) / 100) + "";
 
-		return Transaction.builder().setDate(date).setLocation(location).setAmount(amount).build();
+		return Transaction.builder().setDate(date).setDescription(description).setAmount(amount).build();
 	}
 
 	private static int createRandomIntBetween(int start, int end) {
 		return (int) (start + Math.round(Math.random() * (end - start)));
 	}
 
-	private static final String[] LOCATIONS = { "HEB", "Walmart", "Amazon", "Home Depot", "Shell", "Joann Fabric",
+	private static final String[] DESCRIPTIONS = { "HEB", "Walmart", "Amazon", "Home Depot", "Shell", "Joann Fabric",
 			"PayPal" };
 
-	private static String getRandomLocation() {
-		int index = (int) createRandomIntBetween(0, LOCATIONS.length - 1);
+	private static String getRandomDescription() {
+		int index = (int) createRandomIntBetween(0, DESCRIPTIONS.length - 1);
 
-		return LOCATIONS[index];
+		return DESCRIPTIONS[index];
 	}
 
 	private static String createRandomDate(int startYear, int endYear) {

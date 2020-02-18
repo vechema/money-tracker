@@ -21,7 +21,7 @@ export class TransactionsComponent implements OnInit {
   matTransactions: MatTableDataSource<Transaction>;
   transactions: Transaction[];
 
-  tableColumns: string[] = ['date', 'amount', 'location', 'source'];
+  tableColumns: string[] = ['date', 'amount', 'description', 'source'];
 
   // Filter variables
   filterString: string;
@@ -55,7 +55,7 @@ export class TransactionsComponent implements OnInit {
     this.matTransactions.filterPredicate = (transaction, filter) => {
 
       let wordResult: boolean = true;
-      if (this.filterString && !transaction.location.toLowerCase().includes(this.filterString) ||
+      if (this.filterString && !transaction.description.toLowerCase().includes(this.filterString) ||
         !transaction.source.toLowerCase().includes(this.filterString)) {
         wordResult = false;
       }
