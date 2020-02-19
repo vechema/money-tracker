@@ -130,11 +130,15 @@ public class TransactionFile {
 					continue;
 				}
 
-				Transaction transaction = Transaction.builder().setDate(date).setAmount(amount).setDescription(description)
-						.setSource(source).build();
+				Category category = Category.determineCategory(line);
+				if (category.equals(Category.MISCELLANEOUS)) {
+					System.out.println(category + " : " + line);
+				}
+
+				Transaction transaction = Transaction.builder().setDate(date).setAmount(amount)
+						.setDescription(description).setSource(source).setCategory(category).build();
 
 				if (Arrays.stream(creditDescriptions).parallel().anyMatch(description.toLowerCase()::contains)) {
-					System.out.println(transaction);
 					if (amount.startsWith("-")) {
 						creditIsPos = false;
 					}

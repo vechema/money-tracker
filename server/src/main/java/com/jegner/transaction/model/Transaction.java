@@ -9,12 +9,14 @@ public class Transaction {
 	private final String amount;
 	private final String description;
 	private final String source;
+	private final Category category;
 
 	private Transaction(TransactionBuilder builder) {
 		this.date = builder.date;
 		this.amount = builder.amount;
 		this.description = builder.description;
 		this.source = builder.source;
+		this.category = builder.category;
 	}
 
 	public static TransactionBuilder builder() {
@@ -26,6 +28,7 @@ public class Transaction {
 		private String amount;
 		private String description;
 		private String source;
+		private Category category;
 
 		private TransactionBuilder() {
 
@@ -48,6 +51,11 @@ public class Transaction {
 
 		public TransactionBuilder setSource(String source) {
 			this.source = source;
+			return this;
+		}
+
+		public TransactionBuilder setCategory(Category category) {
+			this.category = category;
 			return this;
 		}
 
